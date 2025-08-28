@@ -1,0 +1,126 @@
+import { GRANT, IAllowDeny, IGrants } from "@/acl/types";
+import { validate } from "@/server/lib/validate";
+import { MethodHandler, Middleware } from "@/types";
+import "reflect-metadata";
+import { rules } from "@/acl/config.acl";
+import BaseController from "./BaseController";
+import { IEntityContainer } from "@/client/entities";
+import { authMiddleware } from "../lib/authMiddleware";
+
+type ActionDecorator = (route: string, allow?: IAllowDeny) => MethodDecorator;
+
+function mergeGrants(a: IGrants = {}, b: IGrants = {}) {
+	const result: IGrants = {};
+
+	const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
+
+	for (const key of keys) {
+		const valuesA = a[key] ?? [];
+		const valuesB = b[key] ?? [];
+		// Merge and remove duplicates
+		result[key] = Array.from(new Set([...valuesA, ...valuesB]));
+	}
+	return result;
+}
+function mergeRules(a: IAllowDeny = { allow: {} }, b: IAllowDeny = { allow: {} }): IAllowDeny {
+	return {
+		allow: mergeGrants(a.allow, b.allow),
+		deny: a.deny || b.deny ? mergeGrants(a.deny, b.deny) : undefined
+	}
+}
+
+function addMethodToRouteRules(routeRules: IAllowDeny, method: GRANT) {
+	if (routeRules.allow) {
+		routeRules.allow = Object.entries(routeRules.allow).reduce(
+			(acc, [key, value]) => {
+				acc[key] = [...value, method];
+				return acc;
+			},
+			{} as IGrants
+		);
+	}
+	if (routeRules.deny) {
+		routeRules.deny = Object.entries(routeRules.deny).reduce(
+			(acc, [key, value]) => {
+				acc[key] = [...value, method];
+				return acc;
+			},
+			{} as IGrants
+		);
+	}
+	return routeRules;
+}
+type ActionDecoratorFactory = (
+	method: "get" | "post" | "put" | "delete"
+) => ActionDecorator;
+
+const endpointDecorator: ActionDecoratorFactory =
+	(method) => (route, pRules) => (target, propertyKey) => {
+		const endpoints: MethodHandler[] = Reflect.getMetadata(route, target) ?? [];
+		endpoints.push({ method, handler: propertyKey as string });
+		Reflect.defineMetadata(route, endpoints, target);
+
+		const endpoints2: Record<string, Record<string, string>> = Reflect.getMetadata('endpoints', target) ?? {};
+		if (!endpoints2[route]) endpoints2[route] = {};
+		endpoints2[route][method] = propertyKey as string;
+		Reflect.defineMetadata('endpoints', endpoints2, target);
+
+		if (pRules) {
+			const reg = /\[([a-zA-Z0-9_-]+)\]/g;
+			const routePattern = route.replace(reg, "*");
+			pRules = addMethodToRouteRules(pRules, GRANT.GET);
+			rules[routePattern] = mergeRules(pRules, rules[routePattern]);
+      console.log('-------updated rules:', pRules);
+		}
+		const routes: [string, string][] = BaseController.getRoutes();
+		if (!routes.find(rc => rc[0] === route && rc[1] === target.constructor.name))
+			routes.push([route, target.constructor.name])
+    // console.log('routes in dec', routes)
+		Reflect.defineMetadata('routes', routes, BaseController);
+	};
+
+export const GET = endpointDecorator("get");
+export const POST = endpointDecorator("post");
+export const PUT = endpointDecorator("put");
+export const DELETE = endpointDecorator("delete");
+
+export const USE = (middleware: Middleware) => {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	return (target: any, propertyKey?: string) => {
+		const middlewares: Middleware[] =
+			Reflect.getMetadata(
+				"middlewares",
+				propertyKey ? target : target.prototype,
+				propertyKey ?? ""
+			) ?? [];
+
+		middlewares.push(middleware);
+
+		Reflect.defineMetadata(
+			"middlewares",
+			middlewares,
+			propertyKey ? target : target.prototype,
+			propertyKey ?? ""
+		);
+	};
+};
+
+export const Auth = USE(authMiddleware);
+
+const validateDecorator = (target: "body" | "query") => (schema: object) => USE(validate(schema, target));
+
+export const Query = validateDecorator("query");
+export const Body = validateDecorator("body");
+
+export const Entity: (entity: keyof IEntityContainer) => ClassDecorator = (e) => {
+	return (target) => {
+		Reflect.defineMetadata("entity", e, target.prototype);
+	}
+}
+
+export const Pager: MethodDecorator = (target, methodName): void => {
+	methodName = String(methodName);
+	const pagers: string[] = Reflect.getMetadata('pagers', target) || []
+	pagers.push(methodName)
+	Reflect.defineMetadata('pagers', pagers, target)
+}

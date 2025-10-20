@@ -1,3 +1,4 @@
+/* eslint-disable no-empty-pattern */
 import BaseController from "./BaseController";
 import { AnswerType, type ActionProps } from "@/types";
 import { Body, Entity, GET, POST, Query, USE } from "./decorators";
@@ -15,7 +16,7 @@ export default class ClassesController extends BaseController {
       id: { type: "string", pattern: decimalPattern },
     },
   })
-  @GET("/classes/[id]", {
+  @GET("/classes/[id]/edit", {
     allow: {
       [AclRole.ADMIN]: [GRANT.READ],
     },
@@ -40,16 +41,16 @@ export default class ClassesController extends BaseController {
       [AclRole.ADMIN]: [GRANT.READ],
     },
   })
-  public getClassesAdminSsr({}:ActionProps){
+  public getClassesAdminSsr({}: ActionProps) {
     return this.ctx.ClassesService.getClasses();
   }
 
-  @GET('/', {
+  @GET("/", {
     allow: {
       [AclRole.STUDENT]: [GRANT.READ],
     },
   })
-  public getClassesByTeacher({}:ActionProps){
+  public getClassesByTeacher({}: ActionProps) {
     return this.ctx.ClassesService.getClasses();
   }
 
@@ -137,6 +138,38 @@ export default class ClassesController extends BaseController {
     return this.ctx.ClassesService.addStudent(body.class, body.student);
   }
 
+  @POST("/api/classes/removeStudent", {
+    allow: {
+      [AclRole.TEACHER]: [GRANT.WRITE],
+    },
+  })
+  @Body({
+    type: "object",
+    properties: {
+      student: {
+        type: "object",
+        properties: {
+          id: { type: "integer" },
+        },
+        required: ["id"],
+      },
+      class: {
+        type: "object",
+        properties: {
+          id: { type: "integer" },
+        },
+        required: ["id"],
+      },
+    },
+    required: ["class", "student"],
+  })
+  public removeStudent({ body, guard }: ActionProps) {
+    if (!guard.allow(GRANT.WRITE)) {
+      throw new AccessDeniedError();
+    }
+    return this.ctx.ClassesService.removeStudent(body.class, body.student);
+  }
+
   // @DELETE("/api/classes/[i]")
   // public deleteById({ query }: ActionProps) {
   // 	const id = Number(query!.id);
@@ -155,15 +188,15 @@ export default class ClassesController extends BaseController {
 
   @GET("/class/[id]/generateSchedule")
   @Query({
-    type: 'object',
+    type: "object",
     properties: {
-      id: {type: 'string', pattern: decimalPattern},
+      id: { type: "string", pattern: decimalPattern },
     },
-    required: ['id'],
+    required: ["id"],
   })
   public getClassById({ query }: ActionProps) {
-    if(query?.id){
-      return this.ctx.ClassesService.findById(parseInt(query.id as string))
+    if (query?.id) {
+      return this.ctx.ClassesService.findById(parseInt(query.id as string));
     }
   }
 }

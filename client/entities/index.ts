@@ -5,6 +5,7 @@ import UserEntity from "./UserEntity";
 import ScheduleEntity from "./ScheduleEntity";
 import HomeworkEntity from "./HomeworkEntity";
 import MarkEntity from "./MarkEntity";
+import MessageEntity from "./MessageEntity";
 
 export interface IEntityContainer{
   UserEntity: UserEntity,
@@ -13,6 +14,7 @@ export interface IEntityContainer{
   ScheduleEntity: ScheduleEntity,
   HomeworkEntity: HomeworkEntity,
   MarkEntity: MarkEntity,
+  MessageEntity: MessageEntity,
 }
 
 const entities = {
@@ -22,6 +24,7 @@ const entities = {
   ScheduleEntity: asClass(ScheduleEntity).singleton(),
   HomeworkEntity: asClass(HomeworkEntity).singleton(),
   MarkEntity: asClass(MarkEntity).singleton(),
+  MessageEntity: asClass(MessageEntity).singleton(),
 }
 
 

@@ -15,15 +15,16 @@ export default class SubjectsController extends BaseController {
       describe: { type: "string" },
       group: { type: "string" },
     },
-    required: ["title", 'describe', 'group'],
+    required: ["title", "describe", "group"],
   })
-  public save({body}: ActionProps) {
+  public save({ body }: ActionProps) {
     return this.ctx.SubjectsService.saveSubject(body);
   }
 
   @GET("/class/[id]/generateSchedule")
   @GET("/class/[id]/[date]")
-  public getAll({}: ActionProps){
+  @GET("/admin/subjects")
+  public getAll() {
     return this.ctx.SubjectsService.getSubjects();
   }
 

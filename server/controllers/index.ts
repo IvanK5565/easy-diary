@@ -5,6 +5,7 @@ import SubjectsController from "./SubjectsController";
 import ScheduleController from "./ScheduleController";
 import HomeworksController from "./HomeworksController";
 import MarksController from "./MarksController";
+import MessagesController from "./MessagesController";
 
 export interface IControllerContainer {
   UsersController: UsersController;
@@ -13,6 +14,7 @@ export interface IControllerContainer {
   ScheduleController: ScheduleController;
   HomeworksController: HomeworksController;
   MarksController: MarksController;
+  MessagesController: MessagesController;
 }
 
 const controllers = {
@@ -22,6 +24,7 @@ const controllers = {
   ScheduleController: asClass(ScheduleController).singleton(),
   HomeworksController: asClass(HomeworksController).singleton(),
   MarksController: asClass(MarksController).singleton(),
+  MessagesController: asClass(MessagesController).singleton(),
 };
 
 export default controllers;

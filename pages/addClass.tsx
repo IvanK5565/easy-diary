@@ -4,6 +4,7 @@ import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { ClassStatus } from "@/constants";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 
@@ -21,6 +22,7 @@ export default function AddUserPage() {
               initialValues={{
                 title: "",
                 year: 2025,
+                status: ClassStatus.DRAFT,
               }}
               onSubmit={(values) => {
                 saveClass(values);
@@ -29,16 +31,21 @@ export default function AddUserPage() {
                 title: Yup.string().required(),
               })}
             >
-              <Form className="flex flex-col gap-2">
-                <Label htmlFor="title">
-                  <Field
-                    required
-                    name="title"
-                    type="text"
-                    placeholder="1-A"
-                  />
-                  Title
-                </Label>
+              <Form className="flex flex-col gap-1 p-4">
+                <Label htmlFor="title">Titlle</Label>
+                <Field
+                  className="p-2 rounded-2xl border border-border"
+                  id="title"
+                  name="title"
+                />
+                <Label htmlFor="year">Year</Label>
+                <Field
+                  className="p-2 rounded-2xl border border-border"
+                  id="year"
+                  name="year"
+                  type="number"
+                />
+
                 <Button type="submit">Submit</Button>
               </Form>
             </Formik>

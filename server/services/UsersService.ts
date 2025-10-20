@@ -1,15 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { UserRole } from "@/constants";
 import BaseContext from "../di/BaseContext";
-import IServerContainer from "../di/IServerContainer";
+import type IServerContainer from "../di/IServerContainer";
 import type { IUser } from "../models/types";
 import { setOpFields } from "../serviceHelpers";
-import { IEntitiesDto } from "../types";
+import type { IEntitiesDto } from "../types";
 import {
   DestroyModelError,
   ModelNotFoundError,
   ModelValidationError,
 } from "./exceptions";
+import type { ISortParams } from "@/client/store/types";
 
 const DEFAULT_PER_PAGE = 10;
 type IUserFilter = Partial<Omit<IUser, "id" | "password">>;
@@ -17,7 +18,7 @@ interface Pagination {
   page?: number;
   perPage?: number;
   filter?: Record<string, string>;
-  sort?: [string, 1 | 0 | -1];
+  sort?: ISortParams;
 }
 
 type ISaveUserDto = IUser | Omit<IUser, "id">;
@@ -74,7 +75,7 @@ export default class UsersService extends BaseContext {
       pagination?.filter,
     );
     const order: [[string, "ASC" | "DESC"]] | undefined = pagination?.sort
-      ? [[pagination.sort[0], pagination.sort[1] === -1 ? "DESC" : "ASC"]]
+      ? [[pagination.sort.field, pagination.sort.dir === -1 ? "DESC" : "ASC"]]
       : undefined;
     const limit: number = pagination?.perPage ?? DEFAULT_PER_PAGE;
     const offset: number = pagination?.page ? (pagination.page - 1) * limit : 0;

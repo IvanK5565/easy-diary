@@ -26,7 +26,9 @@ import /*authReducer,*/ { authReducerContainer, AuthState } from "../auth/authRe
 import paginationReducer from "./paginationReducer";
 
 export type AppStore = ReturnType<ReturnType<ReduxStore["getMakeStore"]>>;
-export type AppState = ReturnType<AppStore["getState"]>;
+export type AppState = ReturnType<AppStore["getState"]> & {
+	entities: Entities;
+};
 export type AppDispatch = AppStore["dispatch"];
 
 export class ReduxStore extends BaseContext {

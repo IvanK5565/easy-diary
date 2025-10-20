@@ -19,17 +19,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useEntitySelector } from "@/client/hooks/useEntitySelector";
+import { ClassStatus } from "@/constants";
 
 export default function AdminPage() {
   const [selectedStudent, selectStudent] = useState("");
   const [selectedClass, selectClass] = useState("");
-  const classes = Object.values(useEntitySelector('classes') ?? {});
-  const users = Object.values(useEntitySelector('users') ?? {});
+  const classes = Object.values(useEntitySelector("classes") ?? {});
+  const users = Object.values(useEntitySelector("users") ?? {});
   const handleAnswer = useCallback(async (res: Promise<any>) => {
     try {
       const data = await res.then((r) => (r.json ? r.json() : r));
       console.log("type: ", typeof data?.success);
-      if (Boolean(data?.success)) {
+      if (data?.success) {
         toast.success("Success");
         toast.info(`res: ${JSON.stringify(data.data)}`);
       } else toast.warn(data?.message ?? JSON.stringify(data, null, 2));
@@ -46,6 +47,7 @@ export default function AdminPage() {
             initialValues={{
               title: "class",
               year: 2025,
+              status: ClassStatus.DRAFT,
             }}
             onSubmit={(values) => {
               handleAnswer(
@@ -123,12 +125,8 @@ export default function AdminPage() {
             </Select>
             <Button
               onClick={() => {
-                const cls = classes?.find(
-                  (c: any) => c.id === selectedClass,
-                );
-                const std = users?.find(
-                  (s: any) => s.id === selectedStudent,
-                );
+                const cls = classes?.find((c: any) => c.id === selectedClass);
+                const std = users?.find((s: any) => s.id === selectedStudent);
                 if (cls && std) {
                   handleAnswer(
                     fetch("/api/classes/addStudent", {
@@ -151,4 +149,7 @@ export default function AdminPage() {
   );
 }
 
-export const getServerSideProps = container.resolve('getServerSideProps')(["ClassesController","UsersController"]);
+export const getServerSideProps = container.resolve("getServerSideProps")([
+  "ClassesController",
+  "UsersController",
+]);

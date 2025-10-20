@@ -1,30 +1,17 @@
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubItem,
   SidebarSeparator,
-  SidebarTrigger,
 } from "../ui/sidebar";
 import { IMenu, IMenuData } from "@/client/store/types";
 import { toast } from "react-toastify";
 import { useProtectedMenu } from "@/client/hooks/useProtectedMenu";
 import { useTranslation } from "next-i18next";
-import Link from "next/link";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "../ui/collapsible";
-import { Dot, Hash } from "lucide-react";
+import { Dot } from "lucide-react";
+import MultilevelSidebarMenu from "./MultilevelSidebarMenu";
 
 const sidebarMenu: IMenu = {
   dbSync: {
@@ -34,10 +21,6 @@ const sidebarMenu: IMenu = {
         .then((res) => toast.success(JSON.stringify(res)))
         .catch((e) => toast.error(JSON.stringify(e)));
     },
-  },
-  main: {
-    label: "main",
-    url: "/",
   },
   admin: {
     label: "admin",
@@ -49,6 +32,10 @@ const sidebarMenu: IMenu = {
       "admin/classes": {
         label: "classes",
         url: "/admin/classes",
+      },
+      "admin/subjects": {
+        label: "subjects",
+        url: "/admin/subjects",
       },
     },
   },
@@ -76,94 +63,11 @@ const sidebarMenu: IMenu = {
     label: "classes",
     url: "/classes",
   },
-  "class/1/schedule": {
-    label: "class/1/schedule",
-    url: "/class/1/schedule",
-  },
-  test: {
-    label: "test",
-    url: "/test",
-  },
-  newScheduleTemplate: {
-    label: "newScheduleTemplate",
-    url: "/newScheduleTemplate",
-  },
-  addSchedule: {
-    label: "addSchedule",
-    url: "/addSchedule/1",
-  },
   addSubject: {
     label: "addSubject",
     url: "/addSubject",
   },
 };
-
-function MultilevelSidebarMenu({ menu }: { menu: IMenu }) {
-  const { t } = useTranslation("common");
-  return (
-    <SidebarMenu>
-      {Object.entries(menu).map(([key, item]) => {
-        return (
-          (item.items && Object.keys(item.items).length > 0 && (
-            <Collapsible key={key} defaultOpen className="group/collapsible">
-              <SidebarMenuItem>
-                <CollapsibleTrigger asChild>
-                  <SidebarMenuButton asChild>
-                    <button>
-                      <Hash />
-                      <span>{t(item.label || key)}</span>
-                    </button>
-                  </SidebarMenuButton>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                  <SidebarMenuSub>
-                    {Object.entries(item.items).map(([subKey, subItem]) => {
-                      return (
-                        <SidebarMenuSubItem key={subKey}>
-                          <SidebarMenuButton asChild>
-                            {subItem.url ? (
-                              <Link href={subItem.url}>
-                                <Dot />
-                                <span>{t(subItem.label || subKey)}</span>
-                              </Link>
-                            ) : (
-                              <button>
-                                <Dot />
-                                <span>{t(subItem.label || subKey)}</span>
-                              </button>
-                            )}
-                          </SidebarMenuButton>
-                        </SidebarMenuSubItem>
-                      );
-                    })}
-                  </SidebarMenuSub>
-                </CollapsibleContent>
-              </SidebarMenuItem>
-            </Collapsible>
-          )) || (
-            <SidebarMenuItem key={key}>
-              {item.url ? (
-                <SidebarMenuButton asChild>
-                  <Link href={item.url}>
-                    <Hash />
-                    <span>{t(item.label || key)}</span>
-                  </Link>
-                </SidebarMenuButton>
-              ) : (
-                <SidebarMenuButton asChild>
-                  <button onClick={item.onClick}>
-                    <Hash />
-                    <span>{t(item.label || key)}</span>
-                  </button>
-                </SidebarMenuButton>
-              )}
-            </SidebarMenuItem>
-          )
-        );
-      })}
-    </SidebarMenu>
-  );
-}
 
 interface ILayoutSidebarProps {
   menu?: IMenu;
@@ -188,8 +92,8 @@ export default function AppSidebar({
   });
 
   return (
-    <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>
+    <Sidebar collapsible="offcanvas" {...props}>
+      {/* <SidebarHeader>
         <SidebarMenu className="flex flex-row">
           <SidebarMenuItem>
             <SidebarMenuButton asChild className="h-10 flex items-center">
@@ -200,7 +104,7 @@ export default function AppSidebar({
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
-      </SidebarHeader>
+      </SidebarHeader> */}
       <SidebarContent>
         {Object.entries(grouped).map(([key, item], i) => (
           <div key={`group-${key}`}>
@@ -231,9 +135,8 @@ export default function AppSidebar({
           </>
         )}
       </SidebarContent>
-      <SidebarFooter className="w-full flex flex-row-reverse">
-        <SidebarTrigger />
-      </SidebarFooter>
+      {/* <SidebarFooter className="w-full flex flex-row-reverse">
+      </SidebarFooter> */}
     </Sidebar>
   );
 }

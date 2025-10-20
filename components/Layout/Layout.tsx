@@ -3,8 +3,11 @@ import { SidebarProvider } from "../ui/sidebar";
 import TopBar from "./TopBar";
 import AppSidebar from "./AppSidebar";
 import { ThemeProvider } from "../theme-provider";
+import { SidebarMirror } from "./SidebarMirror";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function Layout({ children }: PropsWithChildren) {
+  const isMobile = useIsMobile();
   return (
     <ThemeProvider
       attribute="class"
@@ -12,11 +15,11 @@ export default function Layout({ children }: PropsWithChildren) {
       enableSystem
       disableTransitionOnChange
     >
-      <SidebarProvider defaultOpen={false}>
+      <SidebarProvider defaultOpen={!isMobile}>
         <AppSidebar />
-        <div className="w-screen h-screen relative">
+        <div className="w-screen h-screen flex flex-col">
           <TopBar />
-          {children}
+          <SidebarMirror>{children}</SidebarMirror>
         </div>
       </SidebarProvider>
     </ThemeProvider>

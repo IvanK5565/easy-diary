@@ -1,4 +1,5 @@
-import { useActions } from "@/client/hooks";
+import { GRANT } from "@/acl/types";
+import { useAcl, useActions } from "@/client/hooks";
 import { IUser } from "@/client/store/types";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
@@ -6,78 +7,80 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { UserRole } from "@/constants";
 import { Field, Form, Formik } from "formik";
+import { toast } from "react-toastify";
 import * as Yup from "yup";
 
-export default function AddUserPage() {
+export default function AddUserPage({ user }: { user?: IUser }) {
+  const initialValues = {
+    email: "teacher@email.com",
+    firstname: "ivan",
+    lastname: "",
+    password: "teacher",
+    role: UserRole.Teacher,
+  };
   const { saveUser } = useActions("UserEntity");
+  const { allow } = useAcl();
   return (
     <Layout>
-      <div className="flex justify-center">
+      <div className="flex justify-center flex-1">
         <Card>
           <CardHeader>
             <CardTitle>New User</CardTitle>
           </CardHeader>
           <CardContent>
-            <Formik<Omit<IUser, "id">>
-              initialValues={{
-                firstName: "",
-                lastName: "",
-                email: "",
-                password: "",
-                role: UserRole.Student,
-              }}
+            <Formik
+              initialValues={user || initialValues}
               onSubmit={(values) => {
-                saveUser(values);
+                // saveUser(values);
+                toast(JSON.stringify(values), { autoClose: 10000 });
               }}
               validationSchema={Yup.object().shape({
-                firstName: Yup.string().required(),
-                lastName: Yup.string().required(),
-                email: Yup.string().email().required(),
-                password: Yup.string().min(4).max(20).required(),
-                role: Yup.string().oneOf(["student", "teacher"]),
+                email: Yup.string().required(),
+                password: Yup.string().min(4).required(),
+                role: Yup.string().required(),
               })}
             >
-              <Form className="flex flex-col gap-2">
-                <Label htmlFor="firstName">
-                  <Field
-                    required
-                    name="firstName"
-                    type="text"
-                    placeholder="John"
-                  />
-                  First Name
-                </Label>
-                <Label htmlFor="lastName">
-                  <Field
-                    required
-                    name="lastName"
-                    type="text"
-                    placeholder="Doe"
-                  />
-                  Last Name
-                </Label>
-                <Label htmlFor="email">
-                  <Field
-                    required
-                    name="email"
-                    type="email"
-                    placeholder="example@mail.com"
-                  />
-                  Email
-                </Label>
-                <Label htmlFor="password">
-                  <Field
-                    required
-                    name="password"
-                    type="password"
-                    placeholder="********"
-                  />
-                  Password
-                </Label>
+              <Form className="flex flex-col gap-1 p-4 rounded-2xl border bg-background">
+                <Label htmlFor="firstname">FirstName</Label>
+                <Field
+                  className="p-2 rounded-2xl border border-border"
+                  id="firstname"
+                  name="firstname"
+                />
+                <Label htmlFor="lastname">LastName</Label>
+                <Field
+                  className="p-2 rounded-2xl border border-border"
+                  id="lastname"
+                  name="lastname"
+                />
+                <Label htmlFor="email">Email</Label>
+                <Field
+                  className="p-2 rounded-2xl border border-border"
+                  id="email"
+                  name="email"
+                />
+                <Label htmlFor="password">Password</Label>
+                <Field
+                  className="p-2 rounded-2xl border border-border"
+                  id="password"
+                  name="password"
+                />
                 <Label htmlFor="role">Role:</Label>
-                <Field required as="select" name="role">
-                  <option value="student">Student</option>
-                  <option value="teacher">Teacher</option>
+                <Field
+                  required
+                  as="select"
+                  name="role"
+                  className="bg-background rounded-2xl border border-border p-3"
+                >
+                  <option
+                    className="bg-input rounded-2xl border border-border p-2"
+                    value="student"
+                  >
+                    Student
+                  </option>
+                  {allow(GRANT.EXECUTE, "addTeacher") && (
+                    <option value="teacher">Teacher</option>
+                  )}
                 </Field>
                 <Button type="submit">Submit</Button>
               </Form>

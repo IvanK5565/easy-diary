@@ -39,3 +39,4 @@ export default class HomeworkEntity extends BaseEntity {
     yield this.xRead("/homeworks", "GET", body);
   }
 }
+

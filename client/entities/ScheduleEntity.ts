@@ -3,7 +3,6 @@ import { schema } from "normalizr";
 import { sagaAction, reducer } from "./decorators";
 import type { IClientContainer } from "../di/container";
 import { Entities, ISubject } from "../store/types";
-import { ISchedule } from "../store/types";
 
 export type ScheduleAction = EntityAction<ScheduleEntity>;
 

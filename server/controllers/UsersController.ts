@@ -1,9 +1,10 @@
 import BaseController from "./BaseController";
-import {Body, DELETE, Entity, GET, Pager, POST } from "./decorators";
+import { Body, DELETE, Entity, GET, Pager, POST, Query } from "./decorators";
 import type { ActionProps } from "@/types";
 import { GRANT, AclRole } from "@/acl/types";
 import { AccessDeniedError } from "./exceptions";
 import { registerBodySchema } from "../lib/schemas";
+import { decimalPattern } from "@/constants";
 
 @Entity("UserEntity")
 export default class UsersController extends BaseController {
@@ -20,7 +21,7 @@ export default class UsersController extends BaseController {
   @Body(registerBodySchema)
   @POST("/api/register", { allow: { [AclRole.GUEST]: [GRANT.WRITE] } })
   public async signUp({ body }: ActionProps) {
-    console.log('register body: ', body)
+    console.log("register body: ", body);
     return this.ctx.UsersService.saveUser(body);
   }
 
@@ -36,6 +37,25 @@ export default class UsersController extends BaseController {
     const { id } = query!;
     const numId = Number(id);
     return this.ctx.UsersService.findById(numId);
+  }
+
+  @GET("/classes/[id]/edit", {
+    allow: {
+      [AclRole.TEACHER]: [GRANT.WRITE],
+    },
+  })
+  @Query({
+    type: "object",
+    properties: {
+      id: { type: "string", pattern: decimalPattern },
+    },
+    required: ["id"],
+  })
+  public getUsersSsr({ guard, pager }: ActionProps) {
+    if (!guard.allow(GRANT.WRITE)) {
+      throw new AccessDeniedError();
+    }
+    return this.ctx.UsersService.getUsers(pager);
   }
 
   // @Auth
@@ -118,10 +138,7 @@ export default class UsersController extends BaseController {
   @POST("/api/users/page", { allow: { [AclRole.GUEST]: [GRANT.EXECUTE] } })
   @Pager
   public pageUsers({ pager }: ActionProps) {
-    return this.ctx.UsersService.getUsers({
-      ...pager,
-      sort: pager.sort ? [pager.sort.field, pager.sort.dir] : undefined,
-    });
+    return this.ctx.UsersService.getUsers(pager);
   }
 
   @GET("/admin/classes", {
@@ -134,7 +151,10 @@ export default class UsersController extends BaseController {
       [AclRole.ADMIN]: [GRANT.READ],
     },
   })
-  public getUsersAdminSsr({}:ActionProps){
+  public getUsersAdminSsr({ guard }: ActionProps) {
+    if (!guard.allow(GRANT.READ)) {
+      throw new AccessDeniedError();
+    }
     return this.ctx.UsersService.getUsers();
   }
 }

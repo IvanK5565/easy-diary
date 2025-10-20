@@ -1,14 +1,32 @@
 import BaseController from "./BaseController";
-import { AnswerType, type ActionProps } from "@/types";
+import { type ActionProps } from "@/types";
 import { Body, Entity, GET, POST, Query, USE } from "./decorators";
 import { authMiddleware } from "../lib/authMiddleware";
 import { GRANT, AclRole } from "@/acl/types";
-import { AccessDeniedError, ApiError } from "./exceptions";
-import { StatusCodes } from "http-status-codes";
+import { AccessDeniedError } from "./exceptions";
 import { decimalPattern } from "@/constants";
 
 @Entity("MarkEntity")
 export default class MarksController extends BaseController {
+    @Body({
+    type: "object",
+    properties: {
+      id: {type: "integer" },
+      scheduleId: { type: "integer" },
+      studentId: { type: "integer" },
+      type: { type: "string" },
+      value: { type: "integer" },
+    },
+    required: ["scheduleId", "studentId", "type", "value"],
+  })
+  @POST("/api/marks", { allow: { [AclRole.TEACHER]: [GRANT.WRITE] } })
+  public saveMark({ body, guard }: ActionProps) {
+    if (!guard.allow(GRANT.WRITE)) {
+      throw new AccessDeniedError();
+    }
+    return this.ctx.MarksService.save(body);
+  }
+
   @Query({
     type: "object",
     properties: {

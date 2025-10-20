@@ -25,8 +25,8 @@ export enum AuthType {
 
 export interface IIdentity  {
     id: number;
-    firstName?: string;
-    lastName?: string;
+    firstname?: string;
+    lastname?: string;
     role: AclRole;
     email: string;
     roles:IRoles;

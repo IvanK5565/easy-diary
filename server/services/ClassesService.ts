@@ -111,8 +111,31 @@ export default class ClassesService extends BaseContext {
         studentId: std.id,
       });
       await stdCls.save();
-      return await this.ctx.ClassesModel.findOne({
-        where: { id: cls.id },
+      return await this.ctx.ClassesModel.findByPk(cls.id, {
+        include: {
+          model: this.ctx.UsersModel,
+          as: "studentsInClass",
+        },
+      });
+    } catch (e) {
+      console.error(e instanceof Error ? e.message : JSON.stringify(e));
+      throw new Error("Error in adding student to class");
+    }
+  }
+
+  public async removeStudent(cls: { id: number }, std: { id: number }) {
+    try {
+      const finded = await this.ctx.StudentClassModel.findOne({
+        where: {
+          classId: cls.id,
+          studentId: std.id,
+        },
+      });
+      if (!finded) {
+        throw new Error("Student not in class already");
+      }
+      await finded.destroy();
+      return await this.ctx.ClassesModel.findByPk(cls.id, {
         include: {
           model: this.ctx.UsersModel,
           as: "studentsInClass",

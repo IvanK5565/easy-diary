@@ -112,13 +112,7 @@ export default abstract class BaseEntity extends BaseContext {
     force?: boolean,
   ): Generator<Effect> {
     try {
-      const res = yield call(
-        BaseEntity.xFetch,
-        url,
-        method,
-        body,
-        force,
-      );
+      const res = yield call(BaseEntity.xFetch, url, method, body, force);
       if (res) {
         const normalData = this.normalize(res.data);
         yield put({

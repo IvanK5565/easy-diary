@@ -4,7 +4,7 @@ import { useTranslation } from "next-i18next";
 import Link from "next/link";
 
 export default function AppSidebarMenu({ menu }: { menu: IMenu }) {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation("common");
   return (
     <SidebarMenu>
       {Object.entries(menu).map(([key, item]) => (

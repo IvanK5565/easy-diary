@@ -5,7 +5,7 @@ export default function NotFoundPage() {
   const { t } = useTranslation("common");
   return (
     <Layout>
-      <div className="h-screen bg-background flex justify-center items-center">
+      <div className="h-screen bg-background flex flex-1 justify-center items-center">
         {t("notFoundPage")}
       </div>
     </Layout>

@@ -10,39 +10,43 @@ import { Entities } from "../store/types";
 
 export type SubjectAction = EntityAction<SubjectEntity>;
 
-@reducer('subjects')
+@reducer("subjects")
 export default class SubjectEntity extends BaseEntity {
-	protected schema;
-	protected name: keyof Entities;
+  protected schema;
+  protected name: keyof Entities;
 
-	constructor(di: IClientContainer) {
-		super(di);
-		this.schema = new schema.Entity("subjects");
-		this.name = 'subjects';
-	}
+  constructor(di: IClientContainer) {
+    super(di);
+    this.schema = new schema.Entity("subjects");
+    this.name = "subjects";
+  }
 
-	@sagaAction
-	public *getAllSubjects() {
-		yield this.xRead("/subjects");
-	}
+  @sagaAction
+  public *getAllSubjects() {
+    yield this.xRead("/subjects");
+  }
 
-	@sagaAction
-	public *saveSubject(payload: {id?: string, title: string, describe:string}) {
-		const id = payload.id;
-		yield this.xSave(id ? `/subjects/${id}` : "/subjects", payload);
-	}
+  @sagaAction
+  public *saveSubject(payload: {
+    id?: string;
+    title: string;
+    describe: string;
+  }) {
+    const id = payload.id;
+    yield this.xSave(id ? `/subjects/${id}` : "/subjects", payload);
+  }
 
-	@sagaAction
-	public *getSubjectById(payload: {id:string}) {
-		const id = payload.id;
-		if (!id) throw new Error("Id required");
-		yield this.xRead(`/subjects/${id}`);
-	}
+  @sagaAction
+  public *getSubjectById(payload: { id: string }) {
+    const id = payload.id;
+    if (!id) throw new Error("Id required");
+    yield this.xRead(`/subjects/${id}`);
+  }
 
-	@sagaAction
-	public *deleteSubject(payload: any) {
-		if (!payload.id) throw new Error("Id required");
-		const normalized = this.normalize(payload);
-		yield put({type:'DELETE', payload:normalized.entities});
-	}
+  @sagaAction
+  public *deleteSubject(payload: any) {
+    if (!payload.id) throw new Error("Id required");
+    const normalized = this.normalize(payload);
+    yield put({ type: "DELETE", payload: normalized.entities });
+  }
 }

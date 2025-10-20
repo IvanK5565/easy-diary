@@ -38,8 +38,8 @@ function FullFormField({
 }
 
 export default function AddSubject() {
-  const {t} = useTranslation('common');
-  const {saveSubject} = useActions('SubjectEntity');
+  const { t } = useTranslation("common");
+  const { saveSubject } = useActions("SubjectEntity");
   return (
     <Layout>
       <div className="p-4">
@@ -62,7 +62,7 @@ export default function AddSubject() {
             <FullFormField name="title" label={t("Title")} required />
             <FullFormField name="describe" label={t("Describe")} />
             <FullFormField name="group" label={t("Group")} />
-            <Button type="submit">{t('Submit')}</Button>
+            <Button type="submit">{t("Submit")}</Button>
           </Form>
         </Formik>
       </div>

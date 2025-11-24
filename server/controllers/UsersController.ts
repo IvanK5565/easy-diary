@@ -26,7 +26,7 @@ export default class UsersController extends BaseController {
   }
 
   @POST("/api/users", { allow: { [AclRole.TEACHER]: [GRANT.WRITE] } })
-  @POST("/api/users/[id]")
+  @POST("/api/users/[id]", { allow: { [AclRole.ADMIN]: [GRANT.WRITE] } })
   public save({ guard, body }: ActionProps) {
     if (!guard.allow(GRANT.WRITE)) throw new AccessDeniedError();
     return this.ctx.UsersService.saveUser(body);

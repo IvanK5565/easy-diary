@@ -8,8 +8,12 @@ import { dayNames } from "@/client/constants";
 
 type NewScheduleTableProps = {
   onChange?: (sch: ISubject[][]) => void;
+  disabled?: boolean;
 };
-export default function NewScheduleTable({ onChange }: NewScheduleTableProps) {
+export default function NewScheduleTable({
+  onChange,
+  disabled,
+}: NewScheduleTableProps) {
   const [schedule, setSch] = useState<ISubject[][]>([]);
 
   const set = useCallback(
@@ -30,11 +34,11 @@ export default function NewScheduleTable({ onChange }: NewScheduleTableProps) {
         delete schedule[x][y];
       }
       for (let i = 0; i < schedule.length; i += 1) {
-        if (schedule[i] && schedule[i].every((s) => !Boolean(s))) {
+        if (schedule[i] && schedule[i].every((s) => !s)) {
           delete schedule[i];
         }
       }
-      if (schedule.every((s) => !Boolean(s))) {
+      if (schedule.every((s) => !s)) {
         setSch([]);
         onChange?.(schedule);
         return;
@@ -47,7 +51,7 @@ export default function NewScheduleTable({ onChange }: NewScheduleTableProps) {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="grid gap-2 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+      <div className="grid gap-2 grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
         {Array.from({ length: 6 }).map((_, day) => {
           return (
             <Card key={day}>
@@ -66,6 +70,7 @@ export default function NewScheduleTable({ onChange }: NewScheduleTableProps) {
                           <TableCell className="w-4">{queue + 1}</TableCell>
                           <TableCell className="w-full flex items-center justify-end">
                             <SubjectSelect
+                              disabled={disabled}
                               OnSelect={(sub) => {
                                 if (sub) {
                                   set(day, queue, sub);
@@ -84,11 +89,6 @@ export default function NewScheduleTable({ onChange }: NewScheduleTableProps) {
             </Card>
           );
         })}
-        {(schedule.length > 0 &&
-          schedule.map((s, i) => (
-            <pre key={i}>{JSON.stringify(s, null, 2)}</pre>
-          ))) ||
-          "[]"}
       </div>
     </div>
   );

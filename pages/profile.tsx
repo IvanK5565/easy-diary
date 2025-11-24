@@ -19,7 +19,7 @@ export default function ProfilePage() {
     return <Loading />;
   }
   return (
-    <Layout>
+    <Layout breadcrumb={["Profile"]}>
       <Card className="m-20">
         <CardHeader className="-mb-4">{t("Profile")}</CardHeader>
         <CardContent className="flex flex-wrap justify-center border-t-1">

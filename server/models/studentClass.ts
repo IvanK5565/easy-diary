@@ -14,10 +14,11 @@
 //         ON DELETE NO ACTION
 // )
 
-import { Model, DataTypes } from 'sequelize';
-import IServerContainer from '@/server/di/IServerContainer';
+import { DataTypes } from "sequelize";
+import IServerContainer from "@/server/di/IServerContainer";
+import BaseModel from "./BaseModel";
 
-export class StudentClassModel extends Model {
+export class StudentClassModel extends BaseModel {
   declare id: number;
   declare classId: number;
   declare studentId: number;
@@ -26,7 +27,6 @@ export class StudentClassModel extends Model {
 export type StudentClassModelType = typeof StudentClassModel;
 
 const StudentClassModelFactory = (ctx: IServerContainer) => {
-
   StudentClassModel.init(
     {
       id: {
@@ -38,31 +38,31 @@ const StudentClassModelFactory = (ctx: IServerContainer) => {
       classId: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        field: 'classId',
+        field: "classId",
         references: {
-          model: 'ClassesModel',
-          key: 'id',
+          model: "ClassesModel",
+          key: "id",
         },
       },
       studentId: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        field: 'studentId',
+        field: "studentId",
         references: {
           model: "UsersModel",
-          key: 'id',
+          key: "id",
         },
       },
     },
     {
       sequelize: ctx.db,
-      modelName: 'StudentClassModel',
-      tableName: 'studentClass',
+      modelName: "StudentClassModel",
+      tableName: "studentClass",
       timestamps: false,
       underscored: true,
-    }
+    },
   );
   return StudentClassModel;
-}
+};
 
 export default StudentClassModelFactory;

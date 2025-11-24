@@ -1,4 +1,3 @@
-/* eslint-disable require-yield */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import BaseEntity, { EntityAction } from "./BaseEntity";
 import { schema } from "normalizr";
@@ -71,7 +70,7 @@ export default class ClassEntity extends BaseEntity {
     class: { id: number };
     student: { id: number; role: UserRole };
   }) {
-    this.xSave("/classes/addStudent", body);
+    yield this.xSave("/classes/addStudent", body);
   }
 
   @sagaAction
@@ -79,6 +78,6 @@ export default class ClassEntity extends BaseEntity {
     class: { id: number };
     student: { id: number };
   }) {
-    this.xSave("/classes/removeStudent", body);
+    yield this.xSave("/classes/removeStudent", body);
   }
 }

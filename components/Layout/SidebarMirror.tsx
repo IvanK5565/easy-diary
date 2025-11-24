@@ -1,13 +1,28 @@
 import { PropsWithChildren } from "react";
-import { useSidebar } from "../ui/sidebar";
+import LayoutBreadcrumb from "./LayoutBreadcrumb";
 
-export function SidebarMirror({ children }: PropsWithChildren) {
-  const { open } = useSidebar();
+type LayoutMainProps = {
+  breadcrumb?: string[];
+};
+
+export function Main({
+  children,
+  breadcrumb,
+}: PropsWithChildren<LayoutMainProps>) {
+  // const { open } = useSidebar();
+  const open = true;
   return (
-    <div className="flex flex-row justify-between flex-1 w-full h-full">
-      <div className="flex-1 flex">{children}</div>
+    <div className="flex flex-row justify-between w-full h-full">
       <div
-        className="hidden lg:flex transition-[width] duration-200 ease-linear bg-accent"
+        className="hidden lg:flex transition-[width] duration-200 ease-linear"
+        style={{ width: open ? "16rem" : "0rem" }}
+      />
+      <div className="w-full flex flex-col">
+        <LayoutBreadcrumb items={breadcrumb} />
+        <div className="w-full flex">{children}</div>
+      </div>
+      <div
+        className="hidden lg:flex transition-[width] duration-200 ease-linear"
         style={{ width: open ? "16rem" : "0rem" }}
       />
     </div>

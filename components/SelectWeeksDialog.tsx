@@ -1,69 +1,40 @@
-import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogClose } from "./ui/dialog";
-import { isAfter, eachWeekOfInterval } from "date-fns";
-import { PropsWithChildren, useState, useEffect } from "react";
-import { DialogHeader, DialogFooter } from "./ui/dialog";
-import WeekPickerPopover from "./WeekPickerPopover";
-import { WeeksPicker } from "./WeeksPicker";
-import { Button } from "./ui/button";
+import { PropsWithChildren } from "react";
+import { Button } from "@/components/ui/button";
+import DaysPicker from "@/components/WeeksPicker";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useTranslation } from "next-i18next";
 
 type SelectWeeksDialogProps = PropsWithChildren<{
-  weeks?: Date[];
+  days?: Date[];
   onSelect?: (weeks: Date[]) => void;
   asChild?: boolean;
 }>;
 
-export default function SelectWeeksDialog({
-  weeks = [],
+export function SelectWeeksDialog({
+  days = [],
   onSelect,
-  children,
-  asChild,
 }: SelectWeeksDialogProps) {
-  const [buffer, setWeeks] = useState<Date[]>(weeks);
-  const [start, setStart] = useState<Date>();
-  const [end, setEnd] = useState<Date>();
+  const { t } = useTranslation("common");
 
-  useEffect(() => {
-    if (start && end && isAfter(start, end)) {
-      const temp = start;
-      setStart(end);
-      setEnd(temp);
-    }
-  }, [start, end]);
-
-  const handleRangeSelect = () => {
-    if (start && end) {
-      setWeeks(eachWeekOfInterval({ start, end }, { weekStartsOn: 1 }));
-      setStart(undefined);
-      setEnd(undefined);
-    }
-  };
-  const handleClear = () => {
-    setWeeks([]);
-    setStart(undefined);
-    setEnd(undefined);
-  };
   return (
     <Dialog>
-      <DialogTrigger asChild={asChild}>{children}</DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Select weeks by clicking days</DialogTitle>
-          <WeekPickerPopover selectedWeek={start} onChange={setStart} />
-          <WeekPickerPopover selectedWeek={end} onChange={setEnd} />
-          <Button onClick={handleRangeSelect}>Select</Button>
-          <Button onClick={handleClear}>Clear</Button>
-        </DialogHeader>
-
-        <WeeksPicker selectedWeeks={buffer} onChange={setWeeks} />
-
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="outline">Close</Button>
-          </DialogClose>
-          <DialogClose asChild>
-            <Button onClick={() => onSelect?.(buffer)}>Save</Button>
-          </DialogClose>
-        </DialogFooter>
+      <DialogTrigger asChild>
+        <Button>Select Week</Button>
+      </DialogTrigger>
+      <DialogContent className="w-min">
+        <DialogHeader>{t("Select weeks by clicking days")}</DialogHeader>
+        <DaysPicker
+          select="multiple"
+          className="h-full"
+          selectedDays={days}
+          onChange={onSelect}
+          mode="week"
+        />
       </DialogContent>
     </Dialog>
   );

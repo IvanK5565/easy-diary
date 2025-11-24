@@ -12,7 +12,7 @@ export default function AddUserPage() {
   const { saveClass } = useActions("ClassEntity");
   return (
     <Layout>
-      <div className="flex justify-center">
+      <div className="flex flex-1 justify-center items-center">
         <Card>
           <CardHeader>
             <CardTitle>New Class</CardTitle>
@@ -32,7 +32,7 @@ export default function AddUserPage() {
               })}
             >
               <Form className="flex flex-col gap-1 p-4">
-                <Label htmlFor="title">Titlle</Label>
+                <Label htmlFor="title">Title</Label>
                 <Field
                   className="p-2 rounded-2xl border border-border"
                   id="title"

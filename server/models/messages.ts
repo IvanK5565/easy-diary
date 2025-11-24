@@ -1,7 +1,8 @@
-import { Model, DataTypes } from "sequelize";
+import { DataTypes } from "sequelize";
 import IServerContainer from "@/server/di/IServerContainer";
+import BaseModel from "./BaseModel";
 
-export class MessagesModel extends Model {
+export class MessagesModel extends BaseModel {
   declare id: number;
   declare senderId: number;
   declare receiverId: number;
@@ -28,7 +29,7 @@ function MessagesModelFactory(ctx: IServerContainer) {
           model: "UsersModel",
           key: "id",
         },
-        field: 'senderId',
+        field: "senderId",
       },
       //     "receiverId" integer NOT NULL,
       receiverId: {
@@ -38,7 +39,7 @@ function MessagesModelFactory(ctx: IServerContainer) {
           model: "UsersModel",
           key: "id",
         },
-        field: 'receiverId',
+        field: "receiverId",
       },
       //     body character varying(100) COLLATE pg_catalog."default",
       body: {

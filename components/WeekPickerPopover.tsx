@@ -1,9 +1,9 @@
 import { formatWeekRangeByDay } from "@/lib/utils";
-import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
 import { startOfWeek, isSameWeek } from "date-fns";
 import { useState } from "react";
-import { DayPicker } from "react-day-picker";
 import { Button } from "./ui/button";
+import { Calendar } from "./ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
 export default function WeekPickerPopover({
   label = "Select Date",
@@ -40,11 +40,14 @@ export default function WeekPickerPopover({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="outline">
-          {selectedWeek ? formatWeekRangeByDay(selectedWeek, "dd.MM.yy") : label}
+          {selectedWeek
+            ? formatWeekRangeByDay(selectedWeek, "dd.MM.yy")
+            : label}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80">
-        <DayPicker
+      <PopoverContent className="flex w-full">
+        <Calendar
+          className="w-full"
           mode="single"
           showOutsideDays
           onDayClick={handleDayClick}

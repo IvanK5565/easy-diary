@@ -1,10 +1,15 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar, ChevronRight, Edit, PlusCircle, Users } from "lucide-react";
+import { ChevronRight, Edit, Plus, Users } from "lucide-react";
 import { useTranslation } from "next-i18next";
 import { IClass } from "../client/store/types";
 import { useEntitySelector } from "@/client/hooks/useEntitySelector";
-import Link from "next/link";
+import { useAcl } from "@/client/hooks";
+import { useEffect } from "react";
+import { AclResourses } from "@/constants";
+import { GRANT } from "@/acl/types";
+import CustomLinkButton from "./CustomLinkButton";
+import ClassFormModal from "./ClassFormModal";
 
 type Props = {
   onSelectClass?: (cls: IClass) => void;
@@ -14,6 +19,20 @@ type Props = {
 function ClassList({ onSelectClass, activeClass }: Props) {
   const { t } = useTranslation("common");
   const classes = Object.values(useEntitySelector("classes"));
+
+  const { allow, identity } = useAcl();
+  const currentClass = classes.find((cls) =>
+    cls.studentsInClass?.find((id) => id === identity?.id),
+  );
+  const canSelectClass = allow(GRANT.READ, AclResourses.CAN_SELECT_CLASS);
+  const canAddClass = allow(GRANT.WRITE, AclResourses.CAN_ADD_CLASS);
+  const canEditClass = allow(GRANT.WRITE, AclResourses.CAN_EDIT_CLASS);
+
+  useEffect(() => {
+    if (!canSelectClass && currentClass && onSelectClass) {
+      onSelectClass(currentClass);
+    }
+  }, []);
 
   return (
     <Card className="rounded-2xl shadow-md p-4 flex-1">
@@ -30,31 +49,35 @@ function ClassList({ onSelectClass, activeClass }: Props) {
                 <Button
                   variant={activeClass?.id === cls.id ? "default" : "outline"}
                   className="flex-1 justify-between"
-                  onClick={() => onSelectClass?.(cls)}
+                  onClick={() => canSelectClass && onSelectClass?.(cls)}
                 >
                   {cls.title}
                   <ChevronRight size={16} />
                 </Button>
-                <Button className="size-8" asChild>
-                  <Link href={`/class/${cls.id}/edit`}>
-                    <Edit />
-                  </Link>
-                </Button>
-                <Button className="size-8" asChild>
-                  <Link href={`/class/${cls.id}/schedule`}>
-                    <Calendar />
-                  </Link>
-                </Button>
+                <CustomLinkButton
+                  className="size-8"
+                  disabled={!canEditClass}
+                  href={`/class/${cls.id}/edit`}
+                >
+                  <Edit />
+                </CustomLinkButton>
               </li>
             ))}
           </ul>
         </div>
         <div>
-          <Button asChild className="mt-2">
-            <Link href={`/addClass`}>
-              <PlusCircle />
-            </Link>
-          </Button>
+          <ClassFormModal>
+            <Button className="mt-2" disabled={!canAddClass}>
+              <Plus />
+            </Button>
+          </ClassFormModal>
+          {/* <CustomLinkButton
+            className="mt-2"
+            disabled={!canAddClass}
+            href="/addClass"
+          >
+            <Plus />
+          </CustomLinkButton> */}
         </div>
       </CardContent>
     </Card>

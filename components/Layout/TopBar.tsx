@@ -1,4 +1,3 @@
-import { SidebarTrigger } from "../ui/sidebar";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import {
@@ -16,9 +15,9 @@ function TopBar() {
   const { data } = useSession();
   const { t } = useTranslation("common");
   return (
-    <div className="w-full bg-card flex p-2 items-center">
-      <SidebarTrigger />
-      <div className="flex w-full justify-between">
+    <div className="w-full bg-card flex py-2 lg:px-60 px-20 items-center">
+      {/* <SidebarTrigger /> */}
+      <div className="flex flex-1 justify-between">
         <Link href="/" className="text-shadow-primary-foreground text-lg">
           <span className="text-lg">Easy</span>
           <span className="text-primary text-lg">Diary</span>
@@ -26,7 +25,7 @@ function TopBar() {
       </div>
       <div className="flex gap-2 items-center">
         <DropdownMenu>
-          <DropdownMenuTrigger>
+          <DropdownMenuTrigger className="cursor-pointer">
             <Avatar>
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback>CN</AvatarFallback>
@@ -36,12 +35,24 @@ function TopBar() {
             <DropdownMenuLabel>
               My Account No: {data?.identity.id || "null"}
             </DropdownMenuLabel>
+            <DropdownMenuLabel>
+              My Role: {data?.identity.role || "null"}
+            </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link href="/profile">{t("Profile")}</Link>
+              <Link className="cursor-pointer" href="/profile">
+                {t("Profile")}
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link href={"/api/auth/signout"}>{t("Exit")}</Link>
+              <Link className="cursor-pointer" href="/chat">
+                {t("Contacts")}
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link className="cursor-pointer" href={"/api/auth/signout"}>
+                {t("Exit")}
+              </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -1,10 +1,11 @@
 import { useActions } from "@/client/hooks";
 import { useEntitySelector } from "@/client/hooks/useEntitySelector";
 import { AppState } from "@/client/store/ReduxStore";
-import { IMessage } from "@/client/store/types";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
@@ -12,12 +13,17 @@ import { useSelector } from "react-redux";
 export default function ChatPage() {
   const [input, setInput] = useState("");
   const { getChat, send } = useActions("MessageEntity");
+  const { push } = useRouter();
+  const { t } = useTranslation("common");
 
   const auth = useSelector((state: AppState) => state.auth);
   const { query } = useRouter();
   const receiverId = useMemo(
     () => (typeof query.id === "string" && parseInt(query.id, 10)) || undefined,
     [query.id],
+  );
+  const contact = useSelector((state: AppState) =>
+    receiverId ? state.entities.users[receiverId] : undefined,
   );
 
   useEffect(() => {
@@ -30,7 +36,9 @@ export default function ChatPage() {
   }, [auth?.identity.id, receiverId]);
 
   const messages = Object.values(useEntitySelector("messages")).filter(
-    (mess) => mess.receiverId === receiverId && mess.senderId,
+    (mess) =>
+      (mess.receiverId === receiverId && mess.senderId === auth?.identity.id) ||
+      (mess.receiverId === auth?.identity.id && mess.senderId === receiverId),
   );
 
   const addMessage = () => {
@@ -43,15 +51,40 @@ export default function ChatPage() {
       setInput("");
     }
   };
+
+  if (!auth) {
+    push("/");
+    return null;
+  }
+
   return (
-    <Layout>
-      <div className="flex-1 p-20 flex border-2 border-red-700 overflow-hidden">
+    <Layout breadcrumb={["Chat"]}>
+      <div className="flex-1 p-5 lg:p-20 flex overflow-hidden">
         <div className="w-full xl:h-[700px] flex flex-col p-2 rounded-2xl border border-border bg-accent overflow-hidden">
           <div className="w-full pb-2 flex justify-center items-center text-center">
-            Header
+            {contact?.firstname} {contact?.lastname} {contact?.email}
           </div>
           <div className="flex-1 flex flex-col-reverse bg-background rounded-2xl overflow-auto">
-            <ChatView messages={messages} />
+            <CustomScrollArea dependencies={[messages]}>
+              {messages.map((msg, i) => (
+                <div
+                  key={i}
+                  className={cn("w-full flex", {
+                    "text-right flex-row-reverse":
+                      msg.senderId === auth.identity.id,
+                  })}
+                >
+                  <div
+                    className={cn(
+                      "bg-muted text-foreground px-4 py-2 rounded-md shadow w-7/8",
+                      { "text-right": msg.senderId === auth.identity.id },
+                    )}
+                  >
+                    {msg.body}
+                  </div>
+                </div>
+              ))}
+            </CustomScrollArea>
           </div>
           <div className="w-full p-2 space-x-2 flex justify-center items-center text-center">
             <Input
@@ -63,7 +96,7 @@ export default function ChatPage() {
                 }
               }}
             />
-            <Button onClick={addMessage}>Send</Button>
+            <Button onClick={addMessage}>{t("Send")}</Button>
           </div>
         </div>
       </div>
@@ -111,24 +144,5 @@ export function CustomScrollArea({
         {children}
       </div>
     </div>
-  );
-}
-
-type ChatViewProps = {
-  messages: IMessage[];
-};
-
-export function ChatView({ messages }: ChatViewProps) {
-  return (
-    <CustomScrollArea dependencies={[messages]}>
-      {messages.map((msg, i) => (
-        <div
-          key={i}
-          className="bg-muted text-foreground px-4 py-2 rounded-md shadow"
-        >
-          {msg.body}
-        </div>
-      ))}
-    </CustomScrollArea>
   );
 }

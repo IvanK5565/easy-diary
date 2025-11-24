@@ -7,65 +7,60 @@ import {
   SidebarSeparator,
 } from "../ui/sidebar";
 import { IMenu, IMenuData } from "@/client/store/types";
-import { toast } from "react-toastify";
 import { useProtectedMenu } from "@/client/hooks/useProtectedMenu";
 import { useTranslation } from "next-i18next";
 import { Dot } from "lucide-react";
 import MultilevelSidebarMenu from "./MultilevelSidebarMenu";
+import { GRANT } from "@/acl/types";
 
 const sidebarMenu: IMenu = {
-  dbSync: {
-    label: "Sync DB",
-    onClick() {
-      fetch("/api/sync")
-        .then((res) => toast.success(JSON.stringify(res)))
-        .catch((e) => toast.error(JSON.stringify(e)));
-    },
+  // dbSync: {
+  //   label: "Sync DB",
+  //   onClick() {
+  //     fetch("/api/sync")
+  //       .then((res) => toast.success(JSON.stringify(res)))
+  //       .catch((e) => toast.error(JSON.stringify(e)));
+  //   },
+  // },
+  // admin: {
+  //   label: "admin",
+  //   items: {
+  //     "admin/users": {
+  //       label: "users",
+  //       url: "/admin/users",
+  //     },
+  //     "admin/classes": {
+  //       label: "classes",
+  //       url: "/admin/classes",
+  //     },
+  //     "admin/subjects": {
+  //       label: "subjects",
+  //       url: "/admin/subjects",
+  //     },
+  //   },
+  // },
+  // newUser: {
+  //   label: "addUser",
+  //   url: "/addUser",
+  // },
+  "Navigation/contacts": {
+    label: "Contacts",
+    url: "/chat",
+    grant: GRANT.READ,
   },
-  admin: {
-    label: "admin",
-    items: {
-      "admin/users": {
-        label: "users",
-        url: "/admin/users",
-      },
-      "admin/classes": {
-        label: "classes",
-        url: "/admin/classes",
-      },
-      "admin/subjects": {
-        label: "subjects",
-        url: "/admin/subjects",
-      },
-    },
-  },
-  newUser: {
-    label: "addUser",
-    url: "/addUser",
-  },
-  "users/1": {
-    label: "users/1",
-    url: "/users/1",
-  },
-  "diary/1": {
-    label: "diary/1",
-    url: "/diary/1",
-  },
-  users: {
-    label: "users",
-    url: "/users",
-  },
-  contacts: {
-    label: "contacts",
-    url: "/contacts",
-  },
-  classes: {
-    label: "classes",
-    url: "/classes",
-  },
-  addSubject: {
-    label: "addSubject",
+  "Navigation/addSubject": {
+    label: "Add Subject",
     url: "/addSubject",
+    grant: GRANT.READ,
+  },
+  // users: {
+  //   label: "users",
+  //   url: "/users",
+  // },
+  "Navigation/classes": {
+    label: "Classes",
+    url: "/classes",
+    grant: GRANT.READ,
   },
 };
 
@@ -105,7 +100,7 @@ export default function AppSidebar({
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader> */}
-      <SidebarContent>
+      <SidebarContent className="py-20">
         {Object.entries(grouped).map(([key, item], i) => (
           <div key={`group-${key}`}>
             {i !== 0 && (

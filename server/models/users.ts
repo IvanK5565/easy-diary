@@ -1,7 +1,8 @@
-import { DataTypes, Model } from "sequelize";
-import bcrypt from 'bcrypt';
+import { DataTypes } from "sequelize";
+import bcrypt from "bcrypt";
 import IServerContainer from "../di/IServerContainer";
 import { UserRole } from "@/constants";
+import BaseModel from "./BaseModel";
 
 export interface IUser {
   id: number;
@@ -12,7 +13,7 @@ export interface IUser {
   role: UserRole;
 }
 
-export class UsersModel extends Model implements IUser {
+export class UsersModel extends BaseModel {
   declare id: number;
   declare firstname: string;
   declare lastname: string;
@@ -35,15 +36,15 @@ const UsersModelFactory = (ctx: IServerContainer) => {
         primaryKey: true,
         autoIncrement: true,
         allowNull: false,
-        field: 'id',
+        field: "id",
       },
       firstname: {
         type: DataTypes.STRING,
-        field: 'firstname'
+        field: "firstname",
       },
       lastname: {
         type: DataTypes.STRING,
-        field: 'lastname'
+        field: "lastname",
       },
       email: {
         type: DataTypes.STRING,
@@ -88,13 +89,13 @@ const UsersModelFactory = (ctx: IServerContainer) => {
           }
         },
         beforeUpdate: async (user) => {
-          if (user.changed('password')) {
+          if (user.changed("password")) {
             const salt = await bcrypt.genSalt(10);
             user.password = await bcrypt.hash(user.password, salt);
           }
-        }
-      }
-    }
+        },
+      },
+    },
   );
   return UsersModel;
 };

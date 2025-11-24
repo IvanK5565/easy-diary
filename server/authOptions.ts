@@ -32,6 +32,9 @@ export function authOptionsFactory(ctx: IServerContainer): AuthOptions {
       }),
       // ...add more providers here
     ],
+    pages: {
+      signIn: "/signIn",
+    },
     callbacks: {
       jwt({ token, user }) {
         if (user) token.user = user;

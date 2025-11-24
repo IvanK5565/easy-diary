@@ -6,25 +6,29 @@ export default function QuickSelect({
   value = null,
   values = [],
   onSelect,
+  disabled,
 }: {
   value: string | null;
   values: string[];
   onSelect?: (val?: string) => void;
+  disabled?: boolean;
 }) {
   const [selected, setSelected] = useState<string>();
   const onSelectCallback = useCallback(
     (val: string) => {
-      const newVal = val === 'Nothing' ? undefined : val;
+      const newVal = val === "Nothing" ? undefined : val;
       setSelected(newVal);
       onSelect?.(newVal);
     },
     [onSelect],
   );
   return (
-    <Select onValueChange={onSelectCallback}>
+    <Select onValueChange={onSelectCallback} disabled={disabled}>
       <SelectTrigger>{value || selected || "Select the value"}</SelectTrigger>
       <SelectContent>
-        <SelectItem value={"Nothing"}><Minus /></SelectItem>
+        <SelectItem value={"Nothing"}>
+          <Minus />
+        </SelectItem>
         {values.map((val) => (
           <SelectItem key={val} value={val}>
             {val}

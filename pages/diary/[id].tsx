@@ -5,7 +5,6 @@ import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import WeekPickerPopover from "@/components/WeekPickerPopover";
-import { formatWeekRangeByDay } from "@/lib/utils";
 import container from "@/server/di/container";
 import { addDays, addWeeks, format, startOfWeek } from "date-fns";
 import { useRouter } from "next/router";
@@ -34,18 +33,20 @@ export default function DiaryPage() {
   );
 
   return (
-    <Layout>
+    <Layout breadcrumb={["Diary"]}>
       <div className="p-4 flex flex-1 flex-col gap-2">
-        <WeekPickerPopover onChange={(week) => setWeek(week)} />
-        <h2>
+        <h2 className="text-xl font-semibold text-center">
           {cls?.title ?? "class"} - {student.firstname ?? "student"}
         </h2>
         <div className="flex gap-1 items-center w-full justify-center">
           <Button onClick={arrowClick(-1)}>{"<"}</Button>
-          {formatWeekRangeByDay(week)}
+          <WeekPickerPopover
+            selectedWeek={week}
+            onChange={(week) => setWeek(week)}
+          />
           <Button onClick={arrowClick(1)}>{">"}</Button>
         </div>
-        <div>
+        <div className="flex flex-col gap-4 xl:grid xl:grid-rows-3 xl:grid-flow-col pb-4">
           {student &&
             Array.from({ length: 6 }).map((_, day) => (
               <Card key={"dayCard:" + day}>

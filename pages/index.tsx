@@ -16,16 +16,19 @@ export default function Home() {
   const { fetchMarksByClass } = useActions("MarkEntity");
 
   useEffect(() => {
-    if (cls) fetchHomeworksByClass({ classId: cls?.id, weekDay: Date.now() });
+    if (cls) {
+      fetchHomeworksByClass({ classId: cls?.id, weekDay: Date.now() });
+    }
   }, [cls]);
 
   useEffect(() => {
-    if (cls && student)
+    if (cls && student) {
       fetchMarksByClass({
         classId: cls?.id,
         studentId: student.id,
         weekDay: Date.now(),
       });
+    }
   }, [cls, student]);
 
   return (
@@ -39,9 +42,11 @@ export default function Home() {
             activeUser={student}
           />
         </div>
-        <ClassScheduleViewer cls={cls} week={Date.now()} className="p-4" />
-        {student && (
-          <ClassDiary week={Date.now()} className="p-4" classId={cls?.id} />
+        {cls && (
+          <>
+            <ClassScheduleViewer cls={cls} week={Date.now()} className="p-4" />
+            <ClassDiary week={Date.now()} className="p-4" classId={cls?.id} />
+          </>
         )}
       </main>
     </Layout>

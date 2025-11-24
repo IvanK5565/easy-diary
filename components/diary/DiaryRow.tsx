@@ -1,4 +1,4 @@
-import { useActions } from "@/client/hooks";
+import { useAcl, useActions } from "@/client/hooks";
 import { useEntitySelector } from "@/client/hooks/useEntitySelector";
 import { IMark, ISchedule, IUser } from "@/client/store/types";
 import { useTranslation } from "next-i18next";
@@ -8,9 +8,10 @@ import BadgeWithPopover from "../ui/BadgeWithPopover";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import { SquarePlus } from "lucide-react";
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import { MarkType } from "@/constants";
+import { AclResourses, MarkType } from "@/constants";
 import * as Yup from "yup";
 import { Button } from "../ui/button";
+import { GRANT } from "@/acl/types";
 
 export default function DiaryRow({
   sch,
@@ -26,6 +27,10 @@ export default function DiaryRow({
   const homeworks = Object.values(useEntitySelector("homeworks") ?? {});
   const { t } = useTranslation("common");
   const { saveMark } = useActions("MarkEntity");
+
+  const { allow } = useAcl();
+  const canAddMark = allow(GRANT.WRITE, AclResourses.CAN_ADD_MARK);
+  // const canAddHomework = allow(GRANT.WRITE, AclResourses.CAN_ADD_HOMEWORK);
 
   const RenderMark = ({ mark }: { mark: IMark }) => {
     const label = t(mark.type);
@@ -54,7 +59,7 @@ export default function DiaryRow({
         <Dialog>
           <DialogTrigger asChild>
             <button
-              disabled={!sch}
+              disabled={!sch || !canAddMark}
               className="hover:bg-input rounded-sm -m-2 p-2"
             >
               <SquarePlus className={!sch ? `text-accent` : undefined} />

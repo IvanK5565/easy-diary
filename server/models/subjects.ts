@@ -7,8 +7,9 @@
 //     CONSTRAINT subjects_pkey PRIMARY KEY (id)
 // )
 
-import { Model, DataTypes } from "sequelize";
+import { DataTypes } from "sequelize";
 import IServerContainer from "@/server/di/IServerContainer";
+import BaseModel from "./BaseModel";
 
 export interface ISubject {
   id?: number;
@@ -17,7 +18,7 @@ export interface ISubject {
   group: string;
 }
 
-export class SubjectsModel extends Model {
+export class SubjectsModel extends BaseModel {
   declare id: number;
   declare title: string;
   declare description: string;

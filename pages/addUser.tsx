@@ -22,7 +22,7 @@ export default function AddUserPage({ user }: { user?: IUser }) {
   const { allow } = useAcl();
   return (
     <Layout>
-      <div className="flex justify-center flex-1">
+      <div className="flex justify-center flex-1 h-min m-4">
         <Card>
           <CardHeader>
             <CardTitle>New User</CardTitle>
@@ -31,7 +31,7 @@ export default function AddUserPage({ user }: { user?: IUser }) {
             <Formik
               initialValues={user || initialValues}
               onSubmit={(values) => {
-                // saveUser(values);
+                saveUser(values);
                 toast(JSON.stringify(values), { autoClose: 10000 });
               }}
               validationSchema={Yup.object().shape({

@@ -6,11 +6,13 @@ import { EntitiesState } from "@/client/store/types";
 interface ISelectSubjectProps {
   valueId?: number;
   OnSelect?: (sub?: ISubject) => void;
+  disabled?: boolean;
 }
 
 export default function SubjectSelect({
   valueId,
   OnSelect,
+  disabled,
 }: ISelectSubjectProps) {
   const subjects = useSelector(
     (state: EntitiesState) => state.entities.subjects,
@@ -23,6 +25,7 @@ export default function SubjectSelect({
 
   return (
     <QuickSelect
+      disabled={disabled}
       values={values}
       value={value || null}
       onSelect={(title) => {

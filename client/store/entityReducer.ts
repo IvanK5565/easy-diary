@@ -1,6 +1,6 @@
 import { HYDRATE } from "next-redux-wrapper";
 import { Entities, EntitiesAction } from "./types";
-import { ADD_ENTITIES, DELETE_ENTITIES } from "./actionTypes";
+import { ADD_ENTITIES } from "./actionTypes";
 
 const initialState = {};
 
@@ -22,9 +22,9 @@ function entityReducer<K extends keyof Entities>(collectionName: K) {
         const newEntities = action.payload[collectionName];
         return { ...collection, ...newEntities };
       }
-      case 'CLEAR': {
-          return initialState;
-        }
+      case "CLEAR": {
+        return initialState;
+      }
     }
 
     return collection;

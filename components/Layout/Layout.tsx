@@ -1,12 +1,18 @@
 import { PropsWithChildren } from "react";
 import { SidebarProvider } from "../ui/sidebar";
 import TopBar from "./TopBar";
-import AppSidebar from "./AppSidebar";
 import { ThemeProvider } from "../theme-provider";
-import { SidebarMirror } from "./SidebarMirror";
+import { Main } from "./SidebarMirror";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-export default function Layout({ children }: PropsWithChildren) {
+type LayoutProps = {
+  breadcrumb?: string[];
+};
+
+export default function Layout({
+  children,
+  breadcrumb,
+}: PropsWithChildren<LayoutProps>) {
   const isMobile = useIsMobile();
   return (
     <ThemeProvider
@@ -16,10 +22,10 @@ export default function Layout({ children }: PropsWithChildren) {
       disableTransitionOnChange
     >
       <SidebarProvider defaultOpen={!isMobile}>
-        <AppSidebar />
+        {/* <AppSidebar /> */}
         <div className="w-screen h-screen flex flex-col">
           <TopBar />
-          <SidebarMirror>{children}</SidebarMirror>
+          <Main breadcrumb={breadcrumb}>{children}</Main>
         </div>
       </SidebarProvider>
     </ThemeProvider>

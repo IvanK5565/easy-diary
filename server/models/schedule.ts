@@ -1,7 +1,8 @@
-import { Model, DataTypes } from "sequelize";
+import { DataTypes } from "sequelize";
 import IServerContainer from "@/server/di/IServerContainer";
+import BaseModel from "./BaseModel";
 
-export class ScheduleModel extends Model {
+export class ScheduleModel extends BaseModel {
   declare id: number;
   declare classId: number;
   declare subjectId: number;
@@ -28,7 +29,7 @@ function ScheduleModelFactory(ctx: IServerContainer) {
           model: "SubjectsModel",
           key: "id",
         },
-        field: 'subjectId',
+        field: "subjectId",
       },
       classId: {
         type: DataTypes.INTEGER,
@@ -37,7 +38,7 @@ function ScheduleModelFactory(ctx: IServerContainer) {
           model: "ClassesModel",
           key: "id",
         },
-        field: 'classId',
+        field: "classId",
       },
       day: {
         type: DataTypes.BIGINT,

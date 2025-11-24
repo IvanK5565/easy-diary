@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { signIn, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
@@ -13,7 +13,7 @@ export default function Page() {
   }, [status, push]);
   return (
     <div className="w-screen h-screen flex justify-center items-center bg-background">
-      <Button disabled={status === "loading"} onClick={() => signIn()}>
+      <Button disabled={status === "loading"} onClick={() => push("/signIn")}>
         SignIn
       </Button>
     </div>

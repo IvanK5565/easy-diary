@@ -6,7 +6,7 @@ import { sagaAction, reducer } from "./decorators";
 import type { IClientContainer } from "../di/container";
 import { addEntities } from "../store/actions";
 import { put } from "redux-saga/effects";
-import { Entities } from "../store/types";
+import { Entities, ISubject } from "../store/types";
 
 export type SubjectAction = EntityAction<SubjectEntity>;
 
@@ -27,11 +27,9 @@ export default class SubjectEntity extends BaseEntity {
   }
 
   @sagaAction
-  public *saveSubject(payload: {
-    id?: string;
-    title: string;
-    describe: string;
-  }) {
+  public *saveSubject(
+    payload: Omit<ISubject, "id"> & Partial<Pick<ISubject, "id">>,
+  ) {
     const id = payload.id;
     yield this.xSave(id ? `/subjects/${id}` : "/subjects", payload);
   }

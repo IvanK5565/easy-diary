@@ -1,30 +1,30 @@
 import merge from "lodash/merge";
 
 if (typeof document !== "undefined") {
-	throw new Error(
-		"Do not import config.js from inside the client-side code. !!!!!!"
-	);
+  throw new Error(
+    "Do not import config.js from inside the client-side code. !!!!!!",
+  );
 }
 
 const isDev = process.env.ENVIRONMENT !== "prod";
 
 const prodConfig = {
-	dev: isDev,
-	baseUrl: process.env.BASE_URL,
-	apiUrl: process.env.API_STRING,
-	dbUrl: process.env.DB_URL!,
+  dev: isDev,
+  baseUrl: process.env.BASE_URL,
+  apiUrl: process.env.API_STRING,
+  dbUrl: process.env.DATABASE_URL!,
 };
 
 let localConfig = {};
 
 if (isDev) {
-	try {
-		// eslint-disable-next-line @typescript-eslint/no-require-imports
-		localConfig = require("./config.local.ts");
-	} catch (ex) {
-		console.error(ex);
-		console.error("config.local does not exist.");
-	}
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    localConfig = require("./config.local.ts");
+  } catch (ex) {
+    console.error(ex);
+    console.error("config.local does not exist.");
+  }
 }
 
 export default merge(prodConfig, localConfig ?? {});

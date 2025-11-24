@@ -26,7 +26,7 @@ export default function AddHomeworkDialog({
               scheduleId: sch.id,
               teacherId: auth.id,
               title: "",
-              describe: "",
+              description: "",
             }}
             onSubmit={(homework) => {
               saveHomework(homework);

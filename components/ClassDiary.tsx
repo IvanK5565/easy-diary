@@ -11,11 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Popover } from "@radix-ui/react-popover";
 import { PopoverContent, PopoverTrigger } from "./ui/popover";
 import { useEntitySelector } from "@/client/hooks/useEntitySelector";
-import {
-  IHomework,
-  ISchedule,
-  ISubject,
-} from "@/client/store/types";
+import { IHomework, ISchedule, ISubject } from "@/client/store/types";
 import { addDays, isSameDay, isSameWeek, startOfWeek } from "date-fns";
 import { useCallback } from "react";
 import { useTranslation } from "next-i18next";
@@ -29,7 +25,7 @@ type Props = {
 const DAYS = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
 const MAX_QUEUES = 6;
 
-export default function ClassDiary({ week, className, classId }: Props) {
+export default function ClassDiary({ week, className }: Props) {
   const { t } = useTranslation("common");
 
   const weekSchedule = Object.values(useEntitySelector("schedule")).filter(
@@ -93,20 +89,23 @@ export default function ClassDiary({ week, className, classId }: Props) {
                             {subject?.title || "-"}
                           </TableCell>
                           <TableCell className="">
-                            {(homeworksBySchedule && homeworksBySchedule.length > 0 && (
-                              <Popover>
-                                <PopoverTrigger>
-                                  <Badge>{homeworksBySchedule[0].title}</Badge>
-                                </PopoverTrigger>
-                                <PopoverContent>
-                                  {homeworksBySchedule.map((h) => (
-                                    <Badge key={"homework:" + h.id}>
-                                      {h.title}
+                            {(homeworksBySchedule &&
+                              homeworksBySchedule.length > 0 && (
+                                <Popover>
+                                  <PopoverTrigger>
+                                    <Badge>
+                                      {homeworksBySchedule[0].title}
                                     </Badge>
-                                  ))}
-                                </PopoverContent>
-                              </Popover>
-                            )) ||
+                                  </PopoverTrigger>
+                                  <PopoverContent>
+                                    {homeworksBySchedule.map((h) => (
+                                      <Badge key={"homework:" + h.id}>
+                                        {h.title}
+                                      </Badge>
+                                    ))}
+                                  </PopoverContent>
+                                </Popover>
+                              )) ||
                               "-"}
                           </TableCell>
                         </TableRow>

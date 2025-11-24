@@ -6,8 +6,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatWeekRangeByDay(date: Date, pattern: string = "dd.MM.yy"): string {
-  const {start, end} = weekRangeByDay(date);
+export function formatWeekRangeByDay(
+  date: Date,
+  pattern: string = "dd.MM.yy",
+): string {
+  const { start, end } = weekRangeByDay(date);
   return `${format(start, pattern)} - ${format(end, pattern)}`;
 }
 

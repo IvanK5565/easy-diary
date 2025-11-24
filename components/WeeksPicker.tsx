@@ -67,9 +67,7 @@ export default function DaysPicker({
     if (nonSelected.length > 0) {
       onChange?.(concat(selectedDays, nonSelected));
     } else {
-      onChange?.(
-        differenceWith(selectedDays, days, isSameDay),
-      );
+      onChange?.(differenceWith(selectedDays, days, isSameDay));
     }
   }, [currMonth, onChange, selectedDays]);
 

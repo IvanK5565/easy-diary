@@ -15,10 +15,10 @@ export function useProtectedRoute() {
   const auth = useSelector((state: AppState) => state.auth);
   const hasAccess = (() => {
     if (!auth) return false;
-    const { roles, rules, identity } = auth;
+    const { identity } = auth;
+    const { roles, rules } = identity;
     try {
-
-      const guard = new Guard(roles, rules, identity?.role ?? AclRole.GUEST)
+      const guard = new Guard(roles, rules, identity?.role ?? AclRole.GUEST);
       return guard.allow(GRANT.READ, resource);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextApiResponse } from "next";
 import IContextContainer from "@/server/di/IServerContainer";
 import { StatusCodes } from "http-status-codes";
@@ -54,7 +55,7 @@ export default function getServerSidePropsContainer(
           .then((r) => {
             // auth = { ...(req.session?.acl ?? null), identity: (req.session?.user ?? null) };
             if (r) {
-              console.log(name, ': ', JSON.stringify(r, null, 2))
+              console.log(name, ": ", JSON.stringify(r, null, 2));
               let pager: IPagerParams | undefined = undefined;
               if (
                 r &&
@@ -63,7 +64,8 @@ export default function getServerSidePropsContainer(
                 typeof r.items === "object"
               ) {
                 pager = req.pager ?? {
-                  count: r.count,
+                  count:
+                    typeof r.count !== "number" ? Number(r.count) : r.count,
                   page: parseInt(req.body?.page ?? "1"),
                   pageName: req.body?.pageName,
                   perPage: req.body?.perPage
@@ -71,13 +73,13 @@ export default function getServerSidePropsContainer(
                     : DEFAULT_PER_PAGE,
                   entityName: req.body.entityName,
                 };
-                r = r.items;
+                r = r.items as any;
               }
 
               const entity = ctx[name].getEntityName();
               if (entity) {
                 const normalize = redux.normalizer(entity);
-                const normal = normalize(r);
+                const normal = normalize(r as any);
                 normal.result = normal.result ?? null;
                 store.dispatch({
                   ...addEntities(normal.entities),

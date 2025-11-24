@@ -5,20 +5,20 @@ import { ReduxStore } from "../store/ReduxStore";
 import { tContainer } from "../i18n";
 import Guard from "@/acl/Guard";
 
-export interface IClientContainer extends IEntityContainer{
+export interface IClientContainer extends IEntityContainer {
   // sagas: ReturnType<typeof sagas>;
   store: ReduxStore;
   t: ReturnType<typeof tContainer>;
-  guard:Guard
-  persistor: ReduxStore['persistor'];
+  guard: Guard;
+  persistor: ReduxStore["persistor"];
 }
 
-function guardContainer({store}:IClientContainer):Guard{
-  const rules = store.state?.auth?.rules;
-  const roles = store.state?.auth?.roles;
+function guardContainer({ store }: IClientContainer): Guard {
+  const rules = store.state?.auth?.identity.rules;
+  const roles = store.state?.auth?.identity.roles;
   const role = store.state?.auth?.identity.role;
 
-  return new Guard(roles,rules,role);
+  return new Guard(roles, rules, role);
 }
 
 const container = createContainer<IClientContainer>({
@@ -32,6 +32,6 @@ container.register({
   store: asClass(ReduxStore).singleton(),
   t: asFunction(tContainer).singleton(),
   guard: asFunction(guardContainer).singleton(),
-  persistor: asFunction((di:IClientContainer)=>di.store.persistor),
-})
+  persistor: asFunction((di: IClientContainer) => di.store.persistor),
+});
 export default container;

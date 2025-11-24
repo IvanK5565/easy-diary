@@ -29,7 +29,7 @@ export default function ScheduleDayView({
     isSameDay(date, new Date(Number(s.day))),
   );
   const subjetcs = useEntitySelector("subjects");
-  const homeworks = Object.values(useEntitySelector('homeworks'))
+  const homeworks = Object.values(useEntitySelector("homeworks"));
   const { save } = useActions("ScheduleEntity");
   useEffect(() => {
     console.log(date);
@@ -44,13 +44,15 @@ export default function ScheduleDayView({
           <TableBody>
             {Array.from({ length: 8 }).map((_, queue) => {
               const sch = schedule.find((s) => s.queue === queue);
-              const hw = homeworks.filter(h => h.scheduleId === sch?.id);
+              const hw = homeworks.filter((h) => h.scheduleId === sch?.id);
               return (
                 <TableRow
                   key={"Queue:" + queue}
                   className="flex justify-between"
                 >
-                  <TableCell className="w-max px-2 flex items-center border-r-1">{queue + 1}</TableCell>
+                  <TableCell className="w-max px-2 flex items-center border-r-1">
+                    {queue + 1}
+                  </TableCell>
                   <TableCell className="w-full flex items-center">
                     {isEdit ? (
                       <SubjectSelect
@@ -74,7 +76,10 @@ export default function ScheduleDayView({
                     )}
                   </TableCell>
                   <TableCell className="w-max px-2 flex items-center border-r-1">
-                    <BadgeWithPopover data={hw.map(h => h.title)} placeholder={'-'} />
+                    <BadgeWithPopover
+                      data={hw.map((h) => h.title)}
+                      placeholder={"-"}
+                    />
                   </TableCell>
                   <TableCell>
                     {(sch && (

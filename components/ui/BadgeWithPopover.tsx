@@ -2,7 +2,13 @@ import { Badge } from "./badge";
 import { Label } from "./label";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
-export default function BadgeWithPopover({ data, placeholder }: { data: string | string[], placeholder?: string | React.ReactElement }) {
+export default function BadgeWithPopover({
+  data,
+  placeholder,
+}: {
+  data: string | string[];
+  placeholder?: string | React.ReactElement;
+}) {
   if (!data || data.length === 0) {
     return placeholder || null;
   }

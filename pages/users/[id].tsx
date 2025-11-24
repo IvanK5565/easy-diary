@@ -1,5 +1,5 @@
 import { GRANT } from "@/acl/types";
-import { useAcl, useActions } from "@/client/hooks";
+import { useAcl } from "@/client/hooks";
 import { AppState } from "@/client/store/ReduxStore";
 import { IUser } from "@/client/store/types";
 import Layout from "@/components/Layout";
@@ -21,7 +21,6 @@ function UserForm({ user, className }: { user?: IUser; className?: string }) {
     password: "teacher",
     role: UserRole.Teacher,
   };
-  const { saveUser } = useActions("UserEntity");
   const { allow } = useAcl();
   return (
     <div className={className}>

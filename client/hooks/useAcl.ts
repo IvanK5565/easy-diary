@@ -15,7 +15,7 @@ interface IUseAclResult {
 
 export function useAcl() {
   const { pathname, query } = useRouter();
-  const guard = useContainerContext().resolve('guard')
+  const guard = useContainerContext().resolve("guard");
   let resource = pathname;
   const id = query?.id?.toString();
   if (id) {
@@ -27,8 +27,8 @@ export function useAcl() {
     isItMe: () => false,
     identity: null,
     pathname,
-    query
-  }
+    query,
+  };
 
   // const hasAccess = (() => {
   //   if (!auth) return false;
@@ -62,16 +62,15 @@ export function useAcl() {
       return guard.allow(grant, r, null, role);
     };
     res.isItMe = (userId: string) => {
-      return identity.id === userId;
+      return identity.id === parseInt(userId);
     };
     res.identity = identity;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {
-    console.error('Guard creating error in useAcl')
+    console.error("Guard creating error in useAcl");
   }
   return res;
-};
-
+}
 
 // export function useAcl() {
 //   const { replace, pathname, query } = useRouter();

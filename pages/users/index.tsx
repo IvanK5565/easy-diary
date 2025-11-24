@@ -18,8 +18,8 @@ import { useEntitySelector } from "@/client/hooks/useEntitySelector";
 
 export default function StudentsPage() {
   const { t } = useTranslation("common");
-  const classes = Object.values(useEntitySelector('classes'));
-  const users = Object.values(useEntitySelector('users'));
+  const classes = Object.values(useEntitySelector("classes"));
+  const users = Object.values(useEntitySelector("users"));
   const [selectedClass, selectClass] = useState<IClass | undefined>();
 
   const students = useMemo(() => {
@@ -58,10 +58,15 @@ export default function StudentsPage() {
             <TableBody>
               {students.length > 0 &&
                 students.map((usr) => (
-                  <TableRow key={"Student:" + usr.id} className="flex justify-between">
+                  <TableRow
+                    key={"Student:" + usr.id}
+                    className="flex justify-between"
+                  >
                     <TableCell>{usr.firstname}</TableCell>
                     <TableCell className="flex gap-1">
-                      <Button asChild><Link href={'/diary/'+usr.id}>{t("Diary")}</Link></Button>
+                      <Button asChild>
+                        <Link href={"/diary/" + usr.id}>{t("Diary")}</Link>
+                      </Button>
                       <Button>{t("Message")}</Button>
                     </TableCell>
                   </TableRow>

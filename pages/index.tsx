@@ -1,10 +1,10 @@
 import { useActions } from "@/client/hooks";
 import { IClass, IUser } from "@/client/store/types";
-import ClassDiary from "@/components/ClassDiary";
-import ClassList from "@/components/ClassList";
-import ClassScheduleViewer from "@/components/ClassScheduleViewer";
+import ClassDiary from "@/components/home/ClassDiary";
+import ClassList from "@/components/home/ClassList";
+import ClassScheduleViewer from "@/components/home/ClassScheduleViewer";
 import Layout from "@/components/Layout";
-import StudentList from "@/components/StudentsList";
+import StudentList from "@/components/home/StudentsList";
 import container from "@/server/di/container";
 import { useEffect, useState } from "react";
 

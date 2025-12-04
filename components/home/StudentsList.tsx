@@ -1,9 +1,9 @@
 import React, { useMemo } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useTranslation } from "next-i18next";
-import { IClass, IUser } from "../client/store/types";
+import { IClass, IUser } from "../../client/store/types";
 import { useEntitySelector } from "@/client/hooks/useEntitySelector";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import {
   Calendar,
   ChevronRight,
@@ -15,7 +15,7 @@ import Link from "next/link";
 import { useAcl } from "@/client/hooks";
 import { GRANT } from "@/acl/types";
 import { AclResourses } from "@/constants";
-import UserFormModal from "./UserFormModal";
+import UserFormModal from "../UserFormModal";
 
 type Props = {
   cls?: IClass;

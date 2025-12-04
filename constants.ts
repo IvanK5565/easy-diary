@@ -18,7 +18,7 @@ export enum ClassStatus {
 
 export const DEFAULT_PER_PAGE = 10;
 
-export const DAYS = ["Нд", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
+export const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 export const SUNDAY = 6;
 

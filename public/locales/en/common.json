@@ -1,3 +1,6 @@
 {
-    
+    "subjectLabel": "Subject",
+    "homeworkLabel": "Homework",
+    "ClassList": "Classes",
+    "students": "Students"
 }

@@ -9,12 +9,13 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Popover } from "@radix-ui/react-popover";
-import { PopoverContent, PopoverTrigger } from "./ui/popover";
+import { PopoverContent, PopoverTrigger } from "../ui/popover";
 import { useEntitySelector } from "@/client/hooks/useEntitySelector";
 import { IHomework, ISchedule, ISubject } from "@/client/store/types";
 import { addDays, isSameDay, isSameWeek, startOfWeek } from "date-fns";
 import { useCallback } from "react";
 import { useTranslation } from "next-i18next";
+import { DAYS } from "@/constants";
 
 type Props = {
   week: number;
@@ -22,7 +23,6 @@ type Props = {
   classId?: number;
 };
 
-const DAYS = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
 const MAX_QUEUES = 6;
 
 export default function ClassDiary({ week, className }: Props) {
@@ -62,7 +62,9 @@ export default function ClassDiary({ week, className }: Props) {
               <div key={day} className="w-full p-5 shadow rounded-lg">
                 <Table>
                   <TableHeader>
-                    <h2 className="text-xl font-semibold mb-4">{DAYS[day]}</h2>
+                    <h2 className="text-xl font-semibold mb-4">
+                      {DAYS[day + 1]}
+                    </h2>
                     <TableRow>
                       <TableHead className="w-12 text-center">#</TableHead>
                       <TableHead className="w-20">

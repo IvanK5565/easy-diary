@@ -2,14 +2,14 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Edit, Plus, Users } from "lucide-react";
 import { useTranslation } from "next-i18next";
-import { IClass } from "../client/store/types";
+import { IClass } from "../../client/store/types";
 import { useEntitySelector } from "@/client/hooks/useEntitySelector";
 import { useAcl } from "@/client/hooks";
 import { useEffect } from "react";
 import { AclResourses } from "@/constants";
 import { GRANT } from "@/acl/types";
-import CustomLinkButton from "./CustomLinkButton";
-import ClassFormModal from "./ClassFormModal";
+import CustomLinkButton from "../CustomLinkButton";
+import ClassFormModal from "../ClassFormModal";
 
 type Props = {
   onSelectClass?: (cls: IClass) => void;
